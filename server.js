@@ -8,16 +8,13 @@ require("dotenv").config();
 const PORT = process.env.PORT || 3001;
 // Connect to dB schema.sql
 
-const db = mysql.createConnection(
-  {
-    host: "localhost",
-    user: "root",
-    password: "Darthjarjar",
-    database: "employee_db",
-    multipleStatements: true,
-  },
-  console.log(`you are now Connected to the database.`)
-);
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "Darthjarjar",
+  database: "employees_db",
+  multipleStatements: true,
+});
 // main function
 console.log(
   figlet.textSync("Employee Tracker v1", {
@@ -29,7 +26,7 @@ console.log(
   })
 );
 
-function startPromp() {
+const startPromp = () => {
   inquirer
     .prompt({
       name: "do_what",
@@ -47,7 +44,6 @@ function startPromp() {
         "Update Employee Role",
         "Remove Role",
         "Remove Department",
-        "Update Employee Manager",
         "Exit",
       ],
     })
@@ -59,20 +55,20 @@ function startPromp() {
         case "View all Employees by Department":
           viewByDep();
           break;
-        case "View all Employees by Role":
-          viewByRole();
-          break;
         case "View all Employees by Manager ID":
           viewByManager();
+          break;
+        case "View all Employees by Role":
+          viewByRole();
           break;
         case "Add Employee":
           addEmployee();
           break;
-        case "Add Department":
-          addDepart();
-          break;
         case "Add Role":
           addRole();
+          break;
+        case "Add Department":
+          addDepart();
           break;
         case "Remove Employee":
           removeEmployee();
@@ -86,10 +82,6 @@ function startPromp() {
         case "Remove Department":
           removeDepart();
           break;
-        case "Update Employee Manager":
-          updateManager();
-          break;
-        //if 'Exit' is chosen, end connection
         case "Exit":
           console.log("---------------------------");
           console.log("All Done! Have a great day!");
@@ -98,5 +90,23 @@ function startPromp() {
           break;
       }
     });
-}
+};
+
+const viewAll = () => {
+  console.log("-----------------------------------------");
+  console.log("NOW VIEWING ALL EMPLOYEES, ROLES AND DEPARTMENTS");
+  console.log("-----------------------------------------");
+  //query to retrieve data from db
+  const query = `SELECT employees.id, employees.first_name AS "First Name", employees.last_name AS "Last Name", role.title AS "Role", role.salary AS "Salary", department.department_name AS "Department"
+          FROM employees 
+          RIGHT JOIN role ON (role.id = employees.role_id)
+          RIGHT JOIN department ON (department.id = role.department_id)
+          ORDER BY employees.id;`;
+  db.query(query, (err, res) => {
+    if (err) throw err;
+    //display returned data as table
+    console.table(res);
+    startPromp();
+  });
+};
 startPromp();
