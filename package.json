@@ -20,7 +20,10 @@
   "homepage": "https://github.com/Tazaev/Employee-Tracker#readme",
   "dependencies": {
     "console.table": "^0.10.0",
-    "inquirer": "^9.0.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.4",
     "mysql2": "^2.3.3"
   }
 }
