@@ -3,6 +3,7 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql2");
 const figlet = require("figlet");
+const Choices = require("inquirer/lib/objects/choices");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3001;
@@ -200,6 +201,71 @@ const addDepart = () => {
         }
       );
     });
+};
+// add employee option
+const addEmployee = () => {
+  db.query("SELECT * FROM role", (err, res) => {
+    if (err) throw err;
+
+    inquirer
+      .prompt([
+        {
+          name: "first_name",
+          type: "input",
+          message: "Please enter the first name of the new employee: ",
+          validate: function validateInput(name) {
+            return name !== "";
+          },
+        },
+        {
+          name: "last_name",
+          type: "input",
+          message: "Please enter the last name of the new employee: ",
+          validate: function validateInput(name) {
+            return name !== "";
+          },
+        },
+        {
+          name: "choose_role",
+          type: "rawlist",
+          choices() {
+            const choices = [];
+            res.forEach(({ title }) => {
+              choices.push(title);
+            });
+            return choices;
+          },
+          message: "Choose a role for the employee to have: ",
+        },
+      ])
+      .then((answers) => {
+        let newRoleID;
+        res.forEach((res) => {
+          if (res.title === answers.choose_role) {
+            newRoleID = res.id;
+          }
+        });
+
+        //query to insert new data
+        db.query(
+          "INSERT INTO employees SET ?",
+          {
+            first_name: answers.first_name,
+            last_name: answers.last_name,
+            role_id: newRoleID,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log("---------------------------");
+            console.log(
+              `New Employee ${answers.first_name} ${answers.last_name} added to database`
+            );
+            console.log("---------------------------");
+            startPromp();
+          }
+        );
+      });
+  });
 };
 
 startPromp();
