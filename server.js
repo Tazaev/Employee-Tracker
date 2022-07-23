@@ -175,5 +175,31 @@ const viewByManager = () => {
     startPromp();
   });
 };
+const addDepart = () => {
+  inquirer
+    .prompt({
+      name: "add_department",
+      type: "input",
+      message: "Please enter new department name: ",
+      validate: function validateInput(name) {
+        return name !== "";
+      },
+    })
+    .then((answer) => {
+      //query to insert new data in db
+      db.query(
+        "INSERT INTO department SET ?",
+        {
+          department_name: answer.add_department,
+        },
+        (err) => {
+          if (err) throw err;
+          console.log(`Department ${answer.add_department} has been created`);
+
+          startPromp();
+        }
+      );
+    });
+};
 
 startPromp();
