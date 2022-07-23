@@ -22,6 +22,10 @@
 ## Usage:
 ### To allow users to keep track of employees and managers with respect to their roles and departments.
 
+
+https://user-images.githubusercontent.com/104277419/180592588-c056e0e5-f1d9-4763-b01b-50ec208e4efc.mp4
+
+
 ## Contributors:
 ### practice ethical coding standards
 
