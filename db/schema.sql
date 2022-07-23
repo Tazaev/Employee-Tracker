@@ -9,6 +9,15 @@ CREATE TABLE department (
     PRIMARY KEY (id)
 );
 
+CREATE TABLE role (
+    id INTEGER NOT NULL AUTO_INCREMENT,
+    title VARCHAR(30) NOT NULL,
+    department_id INTEGER NOT NULL,
+    salary DECIMAL(10,4) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
+);
+
 CREATE TABLE employees (
     id INTEGER NOT NULL AUTO_INCREMENT,
     first_name VARCHAR(30) NOT NULL,
@@ -19,11 +28,4 @@ CREATE TABLE employees (
     FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
 );
 
-CREATE TABLE role (
-    id INTEGER NOT NULL AUTO_INCREMENT,
-    title VARCHAR(30) NOT NULL,
-    department_id INTEGER NOT NULL,
-    salary DECIMAL(10,4) NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE CASCADE
-);
+

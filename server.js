@@ -98,10 +98,11 @@ const viewAll = () => {
   console.log("-----------------------------------------");
   //query to retrieve data from db
   const query = `SELECT employees.id, employees.first_name AS "First Name", employees.last_name AS "Last Name", role.title AS "Role", role.salary AS "Salary", department.department_name AS "Department"
-          FROM employees 
-          RIGHT JOIN role ON (role.id = employees.role_id)
-          RIGHT JOIN department ON (department.id = role.department_id)
-          ORDER BY employees.id;`;
+  FROM employees 
+  RIGHT JOIN role ON (role.id = employees.role_id)
+  RIGHT JOIN department ON (department.id = role.department_id)
+  ORDER BY employees.id;`;
+
   db.query(query, (err, res) => {
     if (err) throw err;
     //display returned data as table
@@ -109,4 +110,56 @@ const viewAll = () => {
     startPromp();
   });
 };
+const viewByRole = () => {
+  console.log("-----------------------");
+  console.log("EMPLOYEES BY ROLE");
+  console.log("-----------------------");
+  //query to retrieve data
+  const query = `SELECT role.id AS "Role ID", role.title AS "Role", role.salary AS "Salary", employees.first_name AS "First Name", employees.last_name AS "Last Name"
+      FROM role
+      LEFT JOIN employees ON (role.id = employees.role_id)
+      ORDER BY role.id;`;
+  db.query(query, (err, res) => {
+    if (err) throw err;
+    //display returned data as table
+    console.table(res);
+    startPromp();
+  });
+};
+const viewByDep = () => {
+  console.log("-----------------------");
+  console.log("EMPLOYEES BY DEPARTMENT");
+  console.log("-----------------------");
+  //query to retrieve data
+  const query = `SELECT department.id, department.department_name AS "Department", employees.first_name AS "First Name", employees.last_name AS "Last Name"
+    FROM department
+    LEFT JOIN role ON (department.id = role.department_id)
+    LEFT JOIN employees ON (role.id = employees.role_id)
+    ORDER BY department.id;`;
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    //display returned data as table
+    console.table(res);
+    startPromp();
+  });
+};
+
+//function to display employees by role
+const viewByRole = () => {
+  console.log("-----------------------");
+  console.log("EMPLOYEES BY ROLE");
+  console.log("-----------------------");
+  //query to retrieve data
+  const query = `SELECT role.id AS "Role ID", role.title AS "Role", role.salary AS "Salary", employees.first_name AS "First Name", employees.last_name AS "Last Name"
+    FROM role
+    LEFT JOIN employees ON (role.id = employees.role_id)
+    ORDER BY role.id;`;
+  db.query(query, (err, res) => {
+    if (err) throw err;
+    //display returned data as table
+    console.table(res);
+    startPromp();
+  });
+};
+
 startPromp();
