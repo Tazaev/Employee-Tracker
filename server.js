@@ -405,5 +405,44 @@ const removeRole = () => {
       });
   });
 };
+const removeEmployee = () => {
+  //query employees table to populate choices for remove_emp question
+  db.query("SELECT * FROM employees", (err, res) => {
+    if (err) throw err;
 
+    inquirer
+      .prompt({
+        name: "remove_emp",
+        type: "rawlist",
+        choices() {
+          const optionsArr = [];
+          res.forEach(({ first_name, last_name }) => {
+            optionsArr.push(first_name + " " + last_name);
+          });
+          return optionsArr;
+        },
+        message: "Please choose an Employee to remove from the database:",
+      })
+      .then((answers) => {
+        let removeEmpID;
+        res.forEach((res) => {
+          if (res.first_name + " " + res.last_name === answers.remove_emp) {
+            removeEmpID = res.id;
+          }
+        });
+        //query to delete chosen employee
+        db.query(
+          "DELETE FROM employees WHERE ?",
+          {
+            id: removeEmpID,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log(`${answers.remove_emp} has been successfully deleted`);
+            startPromp();
+          }
+        );
+      });
+  });
+};
 startPromp();
