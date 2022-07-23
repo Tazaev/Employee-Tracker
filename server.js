@@ -252,11 +252,9 @@ const addEmployee = () => {
           },
           (err) => {
             if (err) throw err;
-            console.log("---------------------------");
             console.log(
               `New Employee ${answers.first_name} ${answers.last_name} added to database`
             );
-            console.log("---------------------------");
             startPromp();
           }
         );
@@ -335,11 +333,11 @@ const removeDepart = () => {
         name: "remove_depart",
         type: "rawlist",
         choices() {
-          const choicesArray = [];
+          const optionsArr = [];
           res.forEach(({ department_name }) => {
-            choicesArray.push(department_name);
+            optionsArr.push(department_name);
           });
-          return choicesArray;
+          return optionsArr;
         },
         message: "Choose a Department to remove:",
       })
@@ -367,4 +365,45 @@ const removeDepart = () => {
       });
   });
 };
+const removeRole = () => {
+  db.query("SELECT * FROM role", (err, res) => {
+    if (err) throw err;
+
+    inquirer
+      .prompt({
+        name: "remove_role",
+        type: "rawlist",
+        choices() {
+          const optionsArr = [];
+          res.forEach(({ title }) => {
+            optionsArr.push(title);
+          });
+          return optionsArr;
+        },
+        message: "Please choose role to remove:",
+      })
+      .then((answers) => {
+        let dropRole;
+        res.forEach((res) => {
+          if (res.title === answers.remove_role) {
+            dropRole = res.id;
+          }
+        });
+        db.query(
+          "DELETE FROM role WHERE ?",
+          {
+            id: dropRole,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log(
+              `${answers.remove_role} has been successfully deleted from roles`
+            );
+            startPromp();
+          }
+        );
+      });
+  });
+};
+
 startPromp();
