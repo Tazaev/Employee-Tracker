@@ -13,7 +13,7 @@
 
 ## Description:
 ### This project is about creating a mysql database that keeps track of employees and their 
-### managers. This tracker will also alow users to add and remove employees, roles and departments to the database.
+### managers. This tracker will also allow users to add and remove employees, roles and departments to the database.
 
 ## Installation:
 ### The following must be installed for this Generator to function:
