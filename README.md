@@ -11,6 +11,11 @@
 ###  * [Tests](#tests)
 ###  * [Questions](#questions)
 
+## Description:
+### This project is about creating a mysql database that keeps track of employees and their 
+### managers. This tracker will also alow users to add and remove employees, roles and departments to the da
+tabase.'
+
 ## Installation:
 ### The following must be installed for this Generator to function:
 ### npm i, npm i mysql2, npm i inquirer, npm i figlet, npm i express and npm i dotenv
