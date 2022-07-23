@@ -300,7 +300,6 @@ const addRole = () => {
         },
       ])
       .then((answer) => {
-        //get department id based on department chosen by user
         let newDepartmentID;
         res.forEach((res) => {
           if (res.department_name === answer.role_depart) {
@@ -319,6 +318,47 @@ const addRole = () => {
             if (err) throw err;
             console.log(
               `New role ${answer.add_role} has been successfully added to the database`
+            );
+
+            startPromp();
+          }
+        );
+      });
+  });
+};
+const removeDepart = () => {
+  db.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+
+    inquirer
+      .prompt({
+        name: "remove_depart",
+        type: "rawlist",
+        choices() {
+          const choicesArray = [];
+          res.forEach(({ department_name }) => {
+            choicesArray.push(department_name);
+          });
+          return choicesArray;
+        },
+        message: "Choose a Department to remove:",
+      })
+      .then((answers) => {
+        let dropId;
+        res.forEach((res) => {
+          if (res.department_name === answers.remove_depart) {
+            dropId = res.id;
+          }
+        });
+        db.query(
+          "DELETE FROM department WHERE ?",
+          {
+            id: dropId,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log(
+              `${answers.remove_depart} has been successfully deleted from Departments`
             );
 
             startPromp();
