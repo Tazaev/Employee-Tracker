@@ -42,7 +42,6 @@ const startPromp = () => {
         "Add Department",
         "Add Role",
         "Remove Employee",
-        "Update Employee Role",
         "Remove Role",
         "Remove Department",
         "Exit",
@@ -73,9 +72,6 @@ const startPromp = () => {
           break;
         case "Remove Employee":
           removeEmployee();
-          break;
-        case "Update Employee Role":
-          updateRole();
           break;
         case "Remove Role":
           removeRole();
@@ -267,5 +263,68 @@ const addEmployee = () => {
       });
   });
 };
+// add role to database
+const addRole = () => {
+  db.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
 
+    inquirer
+      .prompt([
+        {
+          name: "add_role",
+          type: "input",
+          message: "Please enter a new role title: ",
+          validate: function validateInput(name) {
+            return name !== "";
+          },
+        },
+        {
+          name: "add_salary",
+          type: "input",
+          message: "Please enter a salary for the new role: ",
+          validate: function validateInput(name) {
+            return name !== "";
+          },
+        },
+        {
+          name: "role_depart",
+          type: "rawlist",
+          choices() {
+            const optionsArr = [];
+            res.forEach(({ department_name }) => {
+              optionsArr.push(department_name);
+            });
+            return optionsArr;
+          },
+          message: "Which department will the new role fall under?",
+        },
+      ])
+      .then((answer) => {
+        //get department id based on department chosen by user
+        let newDepartmentID;
+        res.forEach((res) => {
+          if (res.department_name === answer.role_depart) {
+            newDepartmentID = res.id;
+          }
+        });
+
+        db.query(
+          "INSERT INTO role SET ?",
+          {
+            title: answer.add_role,
+            salary: answer.add_salary,
+            department_id: newDepartmentID,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log(
+              `New role ${answer.add_role} has been successfully added to the database`
+            );
+
+            startPromp();
+          }
+        );
+      });
+  });
+};
 startPromp();
