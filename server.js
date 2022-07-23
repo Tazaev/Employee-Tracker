@@ -86,7 +86,7 @@ const startPromp = () => {
           console.log("---------------------------");
           console.log("All Done! Have a great day!");
           console.log("---------------------------");
-          connection.end();
+          db.end();
           break;
       }
     });
@@ -136,28 +136,42 @@ const viewByDep = () => {
     LEFT JOIN role ON (department.id = role.department_id)
     LEFT JOIN employees ON (role.id = employees.role_id)
     ORDER BY department.id;`;
-  connection.query(query, (err, res) => {
+  db.query(query, (err, res) => {
     if (err) throw err;
     //display returned data as table
     console.table(res);
     startPromp();
   });
 };
-
-//function to display employees by role
-const viewByRole = () => {
-  console.log("-----------------------");
-  console.log("EMPLOYEES BY ROLE");
-  console.log("-----------------------");
-  //query to retrieve data
-  const query = `SELECT role.id AS "Role ID", role.title AS "Role", role.salary AS "Salary", employees.first_name AS "First Name", employees.last_name AS "Last Name"
-    FROM role
-    LEFT JOIN employees ON (role.id = employees.role_id)
-    ORDER BY role.id;`;
+const viewByManager = () => {
+  const query = `SELECT id, first_name, last_name, manager_id
+    FROM employees;`;
   db.query(query, (err, res) => {
     if (err) throw err;
-    //display returned data as table
-    console.table(res);
+    const allManagersArr = [];
+    const employManagerArr = [];
+    res.forEach((res) => {
+      if (!res.manager_id) {
+        allManagersArr.push({
+          id: res.id,
+          Manager: res.first_name + " " + res.last_name,
+        });
+      }
+      if (res.manager_id !== null) {
+        employManagerArr.push({
+          Manager_id: res.manager_id,
+          Employees: res.first_name + " " + res.last_name,
+        });
+      }
+    });
+    console.log("-----------------------------");
+    console.log("VIEW EMPLOYEES BY MANAGER ID");
+    console.log("-----------------------------");
+    console.table(employManagerArr);
+    console.log("-----------------------------");
+    console.log("VIEW ALL MANAGERS");
+    console.log("-----------------------------");
+    console.table(allManagersArr);
     startPromp();
   });
 };
